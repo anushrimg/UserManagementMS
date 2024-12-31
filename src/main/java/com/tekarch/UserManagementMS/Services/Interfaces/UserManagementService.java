@@ -11,4 +11,10 @@ public interface UserManagementService {
     Optional<User> findById(long userId);
     User update(Long userId,User updatedUser);
     void deleteById(long userId);
+    void updatePersonalInfo(Long userId,User updatedInfo);
+    String submitKYC(Long userId);
+    String getKYCStatus(Long userId);
+    String updateKYC(Long userId, String kycStatus);
+    String deleteKYC(Long userId);
+
 }

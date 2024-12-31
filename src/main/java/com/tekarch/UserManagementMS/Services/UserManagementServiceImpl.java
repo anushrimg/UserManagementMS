@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -72,6 +73,64 @@ public class UserManagementServiceImpl implements UserManagementService {
         // Delete the user from the database
         userManagementRepository.delete(existingUser);
 
+    }
+
+
+
+    @Override
+    public void updatePersonalInfo(Long userId, User updatedInfo) {
+        User user = getUserByIdOrThrow(userId);
+
+        if (updatedInfo.getAddress() != null) user.setAddress(updatedInfo.getAddress());
+        if (updatedInfo.getDob() != null) user.setDob(updatedInfo.getDob());
+        if (updatedInfo.getGender() != null) user.setGender(updatedInfo.getGender());
+
+        userManagementRepository.save(user);
+    }
+
+    // Submit KYC
+    @Override
+    public String submitKYC(Long userId) {
+        User user = getUserByIdOrThrow(userId);
+        user.setKycStatus("SUBMITTED");
+        userManagementRepository.save(user);
+        return "KYC has been submitted successfully";
+    }
+
+    // Retrieve KYC Status
+    @Override
+    public String getKYCStatus(Long userId) {
+        User user = getUserByIdOrThrow(userId);
+        return user.getKycStatus();
+    }
+
+    // Update KYC Status
+    @Override
+    public String updateKYC(Long userId, String kycStatus) {
+        if (kycStatus == null || kycStatus.length() > 50) {
+            throw new IllegalArgumentException("Invalid KYC status");
+        }
+
+        User user = getUserByIdOrThrow(userId);
+        user.setKycStatus(kycStatus);
+        userManagementRepository.save(user);
+        return "KYC status has been updated successfully";
+    }
+
+    // Delete KYC
+    @Override
+    public String deleteKYC(Long userId) {
+        User user = getUserByIdOrThrow(userId);
+        user.setKycStatus("DELETED");
+        userManagementRepository.save(user);
+        return "KYC status has been deleted successfully";
+    }
+
+
+    // Helper Method to Get User by ID
+    private User getUserByIdOrThrow(Long userId) {
+        return userManagementRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with ID " + userId + " not found"));
     }
 
 

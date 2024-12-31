@@ -43,6 +43,15 @@ public class User {
     @Column(nullable = false, length = 20)
     private String kycStatus = "pending";
 
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 10)
+    private String dob;
+
+    @Column(length = 10)
+    private String gender;
+
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
